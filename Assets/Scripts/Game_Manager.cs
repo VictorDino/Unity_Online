@@ -18,7 +18,7 @@ public class Game_Manager : MonoBehaviour
         }
         else
         {
-            PhotonNetwork.Instantiate("Player", spawnPlayer2.transform.position, Quaternion.identity);
+            PhotonNetwork.Instantiate("Player2", spawnPlayer2.transform.position, Quaternion.identity);
         }
     }
 }

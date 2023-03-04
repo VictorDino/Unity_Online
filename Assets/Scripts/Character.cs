@@ -48,7 +48,7 @@ public class Character : MonoBehaviour, IPunObservable
             rb.AddForce(new Vector2(0f, jumpForce));
         }
         //Codido disparo
-        if (Input.GetKeyDown(KeyCode.E)) { Disparo(); }
+        if (Input.GetKeyDown(KeyCode.LeftControl)) { Disparo(); }
     }
     private void SmoothReplicate()
     {
@@ -77,6 +77,6 @@ public class Character : MonoBehaviour, IPunObservable
     public void NetworkDamage()
     {
         //HACERSE DAÑO
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
     }
 }
