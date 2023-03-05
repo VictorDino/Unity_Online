@@ -108,6 +108,6 @@ public class Character : MonoBehaviour, IPunObservable
     public void NetworkDamage()
     {
         //HACERSE DAÑO
-        //Destroy(this.gameObject);
+        Destroy(this.gameObject);
     }
 }
