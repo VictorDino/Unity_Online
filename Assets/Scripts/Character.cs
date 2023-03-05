@@ -11,11 +11,17 @@ public class Character : MonoBehaviour, IPunObservable
     [SerializeField]
     private float jumpForce = 800f;
 
+    [SerializeField]
+    private Animator animator;
+
     private Rigidbody2D rb;
     private float desiredMovementAxis = 0f;
 
+
     private PhotonView pv;
     private Vector3 enemyPosition = Vector3.zero;
+
+    private bool LookingRight = true;
 
     private void Awake()
     {
@@ -42,10 +48,20 @@ public class Character : MonoBehaviour, IPunObservable
     }
     private void CheckInputs()
     {
-        desiredMovementAxis = Input.GetAxisRaw("Horizontal");
-        if (Input.GetButtonDown("Jump") && Mathf.Approximately(rb.velocity.y, 0f))
+            
+            desiredMovementAxis = Input.GetAxisRaw("Horizontal");
+
+            Flip(desiredMovementAxis);
+
+            animator.SetFloat("Speed", Mathf.Abs(desiredMovementAxis));
+            
+            OnLanding();
+
+        if (Input.GetButtonDown("Jump") && Mathf.Approximately(rb.velocity.y, 0f) && CheckGround.IsGrounded)
         {
             rb.AddForce(new Vector2(0f, jumpForce));
+            animator.SetBool("IsJumping", true);
+           
         }
         //Codido disparo
         if (Input.GetKeyDown(KeyCode.LeftControl)) { Disparo(); }
@@ -65,10 +81,25 @@ public class Character : MonoBehaviour, IPunObservable
             enemyPosition = (Vector3)stream.ReceiveNext();
         }
     }
+
+    private void OnLanding()
+    {
+        animator.SetBool("IsJumping", false);
+    }
     private void Disparo() 
     {
         PhotonNetwork.Instantiate("Bullet", transform.position + new Vector3(1f, 0f, 0f), Quaternion.identity);
     }
+
+    private void Flip(float desiredMovementAxis)
+    {
+        if (LookingRight == true && desiredMovementAxis < 0 || LookingRight == false && desiredMovementAxis > 0)
+        {
+            LookingRight = !LookingRight;
+            transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+        }
+    }
+
     public void Damage()
     {
         pv.RPC("NetworkDamage", RpcTarget.All);
